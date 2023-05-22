@@ -5,16 +5,12 @@ from model import LeNet
 import pickle
 import cv2
 import matplotlib.pyplot as plt
+from model import get_net
 
 
 if __name__ == '__main__':
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    model = LeNet()
-    # 从文件中读取模型
-    state_dict = torch.load('Lenet04.pth', map_location=torch.device(device))
-    model.load_state_dict(state_dict)
-    model.to(device)
-    model.eval()
+    model = get_net()
     # 读取图像文件
     image = Image.open('./imgs/3.png').convert('L')
     image_invert = ImageOps.invert(image)

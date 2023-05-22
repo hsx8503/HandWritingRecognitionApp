@@ -4,6 +4,7 @@ import torch.nn as nn
 from model import LeNet
 import torch.optim as optim
 import torchvision.transforms as transforms
+import optuna
 
 
 def main():
@@ -19,14 +20,16 @@ def main():
                                          download=False, transform=transform)
     val_loader = torch.utils.data.DataLoader(val_set, batch_size=1000,
                                              shuffle=False, num_workers=0)
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     val_data_iter = iter(val_loader)
     val_images, val_labels = next(val_data_iter)
     net = LeNet()
+    net.to(device)
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.0001)
 
-    for epoch in range(5):
-
+    for epoch in range(10):
         running_loss = 0.0
 
         for step, (images, labels) in enumerate(train_loader, start=0):
