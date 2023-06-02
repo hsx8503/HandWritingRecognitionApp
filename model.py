@@ -38,7 +38,7 @@ def get_net():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     model = LeNet()
 
-    state_dict = torch.load('Lenet05.pth', map_location=torch.device(device))
+    state_dict = torch.load('Lenet06.pth', map_location=torch.device(device))
     model.load_state_dict(state_dict)
     model.to(device)
     model.eval()

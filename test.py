@@ -12,7 +12,7 @@ if __name__ == '__main__':
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     model = get_net()
     # 读取图像文件
-    image = Image.open('./imgs/3.png').convert('L')
+    image = Image.open('./imgs/8.png').convert('L')
     image_invert = ImageOps.invert(image)
     image.show()
     # 定义图像变换

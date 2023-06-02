@@ -34,6 +34,7 @@ while (True):
         print(result)
         print("*" * 50)
         print("The number is:", result)
+
     else:
         print("请检查摄像头！！")
         break
