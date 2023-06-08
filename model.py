@@ -5,40 +5,53 @@ import cv2 as cv
 import numpy as np
 import torchvision.transforms as transforms
 import os
-
+from torch.autograd import Variable
 from PIL import Image, ImageOps
 
 
 class LeNet(nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
-        self.conv1 = nn.Conv2d(1, 6, kernel_size=5)
+        self.conv1 = nn.Conv2d(1, 6, kernel_size=5,padding=2)
+        self.Sigmoid = nn.Sigmoid()
         self.pool1 = nn.AvgPool2d(kernel_size=2, stride=2)
         self.conv2 = nn.Conv2d(6, 16, kernel_size=5)
         self.pool2 = nn.AvgPool2d(kernel_size=2, stride=2)
-        self.bn1 = nn.BatchNorm2d(6)
-        self.bn2 = nn.BatchNorm2d(16)
-        self.fc1 = nn.Linear(16 * 4 * 4, 120)
+        self.conv3 = nn.Conv2d(in_channels=16,out_channels=120,kernel_size=5)
+
+        self.fc1 = nn.Flatten()
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
 
-    def forward(self, x):  # ⌊(nh − kh + ph + sh)/sh⌋ × ⌊(nw − kw + pw + sw)/sw⌋.
-        x = F.relu(self.bn1(self.conv1(x)))  # input(1, 28, 28) output(6, 24, 24)
-        x = self.pool1(x)  # output(6, 12, 12)
-        x = F.relu(self.bn2(self.conv2(x)))  # output(16, 8, 8)
-        x = self.pool2(x)  # output(16, 4, 4)
-        x = x.view(-1, 16 * 4 * 4)  # output(256)
-        x = F.relu(self.fc1(x))  # output(120)
-        x = F.relu(self.fc2(x))  # output(84)
-        x = self.fc3(x)  # output(10)
+    def forward(self, x):
+        x = self.Sigmoid(self.conv1(x))
+        x = self.pool1(x)
+        x = self.Sigmoid(self.conv2(x))
+        x = self.pool2(x)
+        x = self.conv3(x)
+
+        x = self.fc1(x)
+        x = self.fc2(x)
+        x = self.fc3(x)
         return x
 
-
+classes = [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+]
 def get_net():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     model = LeNet()
 
-    state_dict = torch.load('Lenet06.pth', map_location=torch.device(device))
+    state_dict = torch.load('Lenet3.pth', map_location=torch.device(device))
     model.load_state_dict(state_dict)
     model.to(device)
     model.eval()
@@ -108,10 +121,10 @@ def predict(img):
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
     ])
-    image_tensor = transform(image_invert).unsqueeze(0).to(device)
+    image_tensor = Variable(transform(image_invert).unsqueeze(0).float()).to(device)
     model = get_net()
     with torch.no_grad():
-        output = model(image_tensor)
-        _, predicted = torch.max(output, 1)
-        result = predicted.item()
+        pred = model(image_tensor)
+        predicted = classes[torch.argmax(pred[0])]
+        result = predicted
     return result
