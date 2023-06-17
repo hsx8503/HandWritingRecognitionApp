@@ -139,9 +139,6 @@ def preprocess_and_extract_text(img):
     resized_roi = cv.resize(roi, (28, 28))
 
     return resized_roi
-import cv2 as cv
-import numpy as np
-
 def preprocess_and_extract_text1(img):
     # Preprocess the image using the given code
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY) # convert to grayscale

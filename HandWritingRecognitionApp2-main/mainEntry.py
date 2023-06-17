@@ -107,7 +107,6 @@ class PyQtMainEntry(QMainWindow, Ui_MainWindow):
         QImg = QImage(self.frame.data, img_cols, img_rows, bytesPerLine, QImage.Format_RGB888)
         self.cameraImg.setPixmap(QPixmap.fromImage(QImg).scaled(
             self.cameraImg.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
-
     def predict_capture(self):#对捕获的图像进行预测，并在界面上显示预测结果
         if not hasattr(self, "captured"):
             return
