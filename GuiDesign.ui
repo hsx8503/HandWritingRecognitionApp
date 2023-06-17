@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1061</width>
+    <height>607</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="openCamera">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>340</y>
+      <width>112</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>打开摄像头</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>450</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>结果：</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="openFolder">
+    <property name="geometry">
+     <rect>
+      <x>760</x>
+      <y>330</y>
+      <width>112</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>上传文件</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="forder">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>30</y>
+      <width>256</width>
+      <height>256</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="predict_1">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>390</y>
+      <width>112</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>预测</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>460</y>
+      <width>81</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>结果：</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="capture">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>330</y>
+      <width>112</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>捕获图像</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="result_capture">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>460</y>
+      <width>81</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="predict_2">
+    <property name="geometry">
+     <rect>
+      <x>760</x>
+      <y>380</y>
+      <width>112</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>预测</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="result_folder">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>460</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="camera">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>40</y>
+      <width>256</width>
+      <height>256</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1061</width>
+     <height>30</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>capture</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>capture()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>338</x>
+     <y>371</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>367</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openFolder</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>readImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>818</x>
+     <y>376</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>918</x>
+     <y>358</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>predict_1</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>predict_capture()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>380</x>
+     <y>444</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>470</x>
+     <y>442</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>predict_2</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>predict_folder()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>849</x>
+     <y>427</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>937</x>
+     <y>423</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>openCamera</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>openCamera()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>114</x>
+     <y>392</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>110</x>
+     <y>456</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>capture()</slot>
+  <slot>openCamera()</slot>
+  <slot>predict_capture()</slot>
+  <slot>readImage()</slot>
+  <slot>predict_folder()</slot>
+ </slots>
+</ui>
