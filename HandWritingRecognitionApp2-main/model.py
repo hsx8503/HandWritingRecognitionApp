@@ -59,6 +59,7 @@ def get_net():
 
     print("get_net函数节点5")
     return net
+'''
 def get_net1():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'#根据计算机是否有可用的 CUDA 设备来选择使用 "cuda" 或 "cpu"。
     model = LeNet()#创建一个 LeNet 模型对象。
@@ -139,6 +140,7 @@ def preprocess_and_extract_text(img):
     resized_roi = cv.resize(roi, (28, 28))
 
     return resized_roi
+'''
 def preprocess_and_extract_text1(img):
     # Preprocess the image using the given code
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY) # convert to grayscale
@@ -178,81 +180,81 @@ def preprocess_and_extract_text1(img):
     padded_roi[pad_h:pad_h+target_height, pad_w:pad_w+target_width] = resized_roi
 
     return padded_roi
-def get_roi(img_bw):
-    # 粗略提取图片的文本区域
-    img_bw_c = img_bw.sum(axis=1) / 255
-    img_bw_r = img_bw.sum(axis=0) / 255
-    all_sum = img_bw_c.sum(axis=0)
-    # 对文本区域进行裁剪和补边，产生较为规整的方形区域
-    if all_sum != 0:
-        r_ind, c_ind = [], []
-        # 过滤存在文本的区域
-        for k, r in enumerate(img_bw_r):
-            if r >= 5:
-                r_ind.append(k)
-        for k, c in enumerate(img_bw_c):
-            if c >= 5:
-                c_ind.append(k)
-        if len(r_ind) == 0 or len(c_ind) == 0:
-            return img_bw
-        # 切出中间部分
-        img_bw_sg = img_bw[c_ind[0]:c_ind[-1], r_ind[0]:r_ind[-1]]
-        # 将图片缩到28x28的像素大小方便
-        new_w, new_h = (28, 28)
-        aspect_ratio = img_bw_sg.shape[1] / img_bw_sg.shape[0]
-        if new_w / new_h > aspect_ratio:
-            new_w = int(new_h * aspect_ratio)
-        else:
-            new_h = int(new_w / aspect_ratio)
-        img_bw_sg = cv.resize(img_bw_sg, (new_w, new_h))
-        w_padding = int((28 - new_w) / 2)
-        h_padding = int((28 - new_h) / 2)
-        img_bw_sg_bord = cv.copyMakeBorder(img_bw_sg, h_padding, h_padding, w_padding, w_padding, cv.BORDER_CONSTANT,
-                                           value=[0, 0, 0])
-        return img_bw_sg_bord
-    else:
-        return img_bw
+# def get_roi(img_bw):
+#     # 粗略提取图片的文本区域
+#     img_bw_c = img_bw.sum(axis=1) / 255
+#     img_bw_r = img_bw.sum(axis=0) / 255
+#     all_sum = img_bw_c.sum(axis=0)
+#     # 对文本区域进行裁剪和补边，产生较为规整的方形区域
+#     if all_sum != 0:
+#         r_ind, c_ind = [], []
+#         # 过滤存在文本的区域
+#         for k, r in enumerate(img_bw_r):
+#             if r >= 5:
+#                 r_ind.append(k)
+#         for k, c in enumerate(img_bw_c):
+#             if c >= 5:
+#                 c_ind.append(k)
+#         if len(r_ind) == 0 or len(c_ind) == 0:
+#             return img_bw
+#         # 切出中间部分
+#         img_bw_sg = img_bw[c_ind[0]:c_ind[-1], r_ind[0]:r_ind[-1]]
+#         # 将图片缩到28x28的像素大小方便
+#         new_w, new_h = (28, 28)
+#         aspect_ratio = img_bw_sg.shape[1] / img_bw_sg.shape[0]
+#         if new_w / new_h > aspect_ratio:
+#             new_w = int(new_h * aspect_ratio)
+#         else:
+#             new_h = int(new_w / aspect_ratio)
+#         img_bw_sg = cv.resize(img_bw_sg, (new_w, new_h))
+#         w_padding = int((28 - new_w) / 2)
+#         h_padding = int((28 - new_h) / 2)
+#         img_bw_sg_bord = cv.copyMakeBorder(img_bw_sg, h_padding, h_padding, w_padding, w_padding, cv.BORDER_CONSTANT,
+#                                            value=[0, 0, 0])
+#         return img_bw_sg_bord
+#     else:
+#         return img_bw
 
-def get_roi1(img_bw):
-    # 粗略提取图片的文本区域
-    img_bw_c = img_bw.sum(axis=1) / 255#对输入的二值化图像进行纵向求和，并将其除以255，得到每行上白色像素点的数量。
-    img_bw_r = img_bw.sum(axis=0) / 255#对输入的二值化图像进行横向求和，并将其除以255，得到每列上白色像素点的数量。
-    all_sum = img_bw_c.sum(axis=0)#计算所有行中白色像素点的总数。
-
-    # 对文本区域进行裁剪和补边，产生较为规整的方形区域
-    if all_sum != 0:
-        r_ind, c_ind = [], []
-        # 过滤存在文本的区域
-        for k, r in enumerate(img_bw_r):#遍历横向白色像素点数量列表（即每列上白色像素点的数量），其中k是索引，r是值。
-            if r >= 5:#如果该列上白色像素点数量大于等于5个，则说明这列属于文本区域，将它的索引k添加到r_ind列表中。
-                r_ind.append(k)
-        for k, c in enumerate(img_bw_c):
-            if c >= 5:
-                c_ind.append(k)
-        if len(r_ind) == 0 or len(c_ind) == 0:#如果r_ind和c_ind列表中至少有一个为空，则说明无法确定文本区域的位置，返回原图像。
-            return img_bw
-
-        # 切出中间部分
-        img_bw_sg = img_bw[c_ind[0]:c_ind[-1], r_ind[0]:r_ind[-1]]#根据行列索引切割出文本区域的部分图像。
-
-        # 将图片缩到28x28的像素大小方便
-        new_w, new_h = (28, 28)
-        aspect_ratio = img_bw_sg.shape[1] / img_bw_sg.shape[0]#计算文本区域的横纵比。
-        if aspect_ratio > 1:
-            new_w = int(aspect_ratio * new_h)
-        else:
-            new_h = int(new_w / aspect_ratio)
-
-        img_bw_sg_resized = cv.resize(img_bw_sg, (new_w, new_h))#将文本区域缩放到新的大小。
-
-        w_padding = int((28 - new_w) / 2)#计算宽度方向上的填充量，使得新图像在28x28的边框中居中显示。
-        h_padding = int((28 - new_h) / 2)
-
-        img_bw_sg_padded = cv.copyMakeBorder(img_bw_sg_resized, h_padding, h_padding, w_padding, w_padding, cv.BORDER_CONSTANT,
-                                           value=[0, 0, 0])
-        return img_bw_sg_padded
-    else:
-        return img_bw
+# def get_roi1(img_bw):
+#     # 粗略提取图片的文本区域
+#     img_bw_c = img_bw.sum(axis=1) / 255#对输入的二值化图像进行纵向求和，并将其除以255，得到每行上白色像素点的数量。
+#     img_bw_r = img_bw.sum(axis=0) / 255#对输入的二值化图像进行横向求和，并将其除以255，得到每列上白色像素点的数量。
+#     all_sum = img_bw_c.sum(axis=0)#计算所有行中白色像素点的总数。
+#
+#     # 对文本区域进行裁剪和补边，产生较为规整的方形区域
+#     if all_sum != 0:
+#         r_ind, c_ind = [], []
+#         # 过滤存在文本的区域
+#         for k, r in enumerate(img_bw_r):#遍历横向白色像素点数量列表（即每列上白色像素点的数量），其中k是索引，r是值。
+#             if r >= 5:#如果该列上白色像素点数量大于等于5个，则说明这列属于文本区域，将它的索引k添加到r_ind列表中。
+#                 r_ind.append(k)
+#         for k, c in enumerate(img_bw_c):
+#             if c >= 5:
+#                 c_ind.append(k)
+#         if len(r_ind) == 0 or len(c_ind) == 0:#如果r_ind和c_ind列表中至少有一个为空，则说明无法确定文本区域的位置，返回原图像。
+#             return img_bw
+#
+#         # 切出中间部分
+#         img_bw_sg = img_bw[c_ind[0]:c_ind[-1], r_ind[0]:r_ind[-1]]#根据行列索引切割出文本区域的部分图像。
+#
+#         # 将图片缩到28x28的像素大小方便
+#         new_w, new_h = (28, 28)
+#         aspect_ratio = img_bw_sg.shape[1] / img_bw_sg.shape[0]#计算文本区域的横纵比。
+#         if aspect_ratio > 1:
+#             new_w = int(aspect_ratio * new_h)
+#         else:
+#             new_h = int(new_w / aspect_ratio)
+#
+#         img_bw_sg_resized = cv.resize(img_bw_sg, (new_w, new_h))#将文本区域缩放到新的大小。
+#
+#         w_padding = int((28 - new_w) / 2)#计算宽度方向上的填充量，使得新图像在28x28的边框中居中显示。
+#         h_padding = int((28 - new_h) / 2)
+#
+#         img_bw_sg_padded = cv.copyMakeBorder(img_bw_sg_resized, h_padding, h_padding, w_padding, w_padding, cv.BORDER_CONSTANT,
+#                                            value=[0, 0, 0])
+#         return img_bw_sg_padded
+#     else:
+#         return img_bw
 
 def predict(img):
     print("predict函数节点1")
@@ -282,23 +284,23 @@ def predict(img):
     print("predict函数节点8")
     return predicted
 
-def predict1(img):
-    try:
-        device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        image_invert = Image.fromarray(img)
-        transform = transforms.Compose([
-            transforms.Resize(32),
-            transforms.Resize((28, 28)),
-            transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,))
-        ])
-        image_tensor = Variable(transform(image_invert).unsqueeze(0).float()).to(device)
-        model = get_net()
-        with torch.no_grad():
-            pred = model(image_tensor)
-            predicted = classes[torch.argmax(pred[0])]
-            result = predicted
-        return result
-    except Exception as e:
-        print(f"Error in predict: {e}")
-        return None
+# def predict1(img):
+#     try:
+#         device = 'cuda' if torch.cuda.is_available() else 'cpu'
+#         image_invert = Image.fromarray(img)
+#         transform = transforms.Compose([
+#             transforms.Resize(32),
+#             transforms.Resize((28, 28)),
+#             transforms.ToTensor(),
+#             transforms.Normalize((0.1307,), (0.3081,))
+#         ])
+#         image_tensor = Variable(transform(image_invert).unsqueeze(0).float()).to(device)
+#         model = get_net()
+#         with torch.no_grad():
+#             pred = model(image_tensor)
+#             predicted = classes[torch.argmax(pred[0])]
+#             result = predicted
+#         return result
+#     except Exception as e:
+#         print(f"Error in predict: {e}")
+#         return None

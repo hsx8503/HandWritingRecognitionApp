@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QFileDialog, QMainWindow
 from matplotlib import pyplot as plt
 
 from GuiDesign import Ui_MainWindow
-from model import predict, get_roi, get_num,preprocess_img,get_roi1,preprocess_img1,preprocess_and_extract_text,preprocess_and_extract_text1
+from model import preprocess_and_extract_text1,predict
 
 
 class PyQtMainEntry(QMainWindow, Ui_MainWindow):
