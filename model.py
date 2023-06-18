@@ -8,15 +8,16 @@ import os
 from torch.autograd import Variable
 from PIL import Image, ImageOps
 
+
 class LeNet(nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
-        self.conv1 = nn.Conv2d(1, 6, kernel_size=5, padding=2)
+        self.conv1 = nn.Conv2d(1, 6, kernel_size=5,padding=2)
         self.Sigmoid = nn.Sigmoid()
         self.pool1 = nn.AvgPool2d(kernel_size=2, stride=2)
         self.conv2 = nn.Conv2d(6, 16, kernel_size=5)
         self.pool2 = nn.AvgPool2d(kernel_size=2, stride=2)
-        self.conv3 = nn.Conv2d(in_channels=16, out_channels=120, kernel_size=5)
+        self.conv3 = nn.Conv2d(in_channels=16,out_channels=120,kernel_size=5)
 
         self.fc1 = nn.Flatten()
         self.fc2 = nn.Linear(120, 84)
@@ -46,19 +47,15 @@ classes = [
     "8",
     "9"
 ]
-
 def get_net():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    net = LeNet().to(device)
+    model = LeNet()
+
     state_dict = torch.load('Lenet3.pth', map_location=torch.device(device))
-    net.load_state_dict(state_dict)
-    net.eval()
-    print("函数节点3")
-
-    print("函数节点4")
-
-    print("函数节点5")
-    return net
+    model.load_state_dict(state_dict)
+    model.to(device)
+    model.eval()
+    return model
 
 
 # 对图像的初步处理
@@ -116,27 +113,18 @@ def get_roi(img_bw):
 
 
 def predict(img):
-    print("函数节点1")
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    image_invert = Image.fromarray(img).convert('L')
-    print("函数节点2")
+    image_invert = Image.fromarray(img)
     transform = transforms.Compose([
         transforms.Resize(32),
         transforms.Resize((28, 28)),
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
     ])
-    image_tensor = transforms.ToTensor()(image_invert)
-    image_invert.show()
+    image_tensor = Variable(transform(image_invert).unsqueeze(0).float()).to(device)
     model = get_net()
-    print("函数节点6")
-    image_tensor = Variable(torch.unsqueeze(image_tensor, dim=0).float()).to(device)
-    print("函数节点7")
-
     with torch.no_grad():
         pred = model(image_tensor)
-        print("函数节点9")
         predicted = classes[torch.argmax(pred[0])]
-
-    print("函数节点8")
-    return predicted
+        result = predicted
+    return result

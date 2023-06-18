@@ -1,19 +1,24 @@
 import torch
-import torchvision
 import torch.nn as nn
 from model import LeNet
 import torch.optim as optim
 from torch.optim import lr_scheduler
+from torchvision.datasets import  MNIST
+from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 
-# 加载数据集，使用MNIST
+# 加载MNIST数据集
 transform = transforms.Compose([
     transforms.ToTensor(),
 ])
-train_set = torchvision.datasets.MNIST(root='./data', train=True, download=True, transform=transform)
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=16, shuffle=True)
-val_set = torchvision.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
-val_loader = torch.utils.data.DataLoader(val_set, batch_size=16, shuffle=True)
+train_set = MNIST(root='./data', train=True, download=True, transform=transform)
+train_loader = DataLoader(train_set, batch_size=16, shuffle=True)
+val_set = MNIST(root='./data', train=False, download=True, transform=transform)
+val_loader = DataLoader(val_set, batch_size=16, shuffle=True)
+
+
 
 # 定义模型，损失函数，激活函数
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -24,7 +29,7 @@ optimizer = optim.SGD(net.parameters(), lr=1e-3, momentum=0.9)
 lr_scheduler = lr_scheduler.StepLR(optimizer,step_size=10,gamma=0.1)
 
 def train(train_loader, net, loss_function, optimizer):
-    net.train()
+    net.train().to(device)
     accuracy_sum, loss_sum, n = 0.0, 0.0, 0
 
     for step, (images, labels) in enumerate(train_loader, start=0):
@@ -33,7 +38,7 @@ def train(train_loader, net, loss_function, optimizer):
 
         outputs = net(images)
         loss = loss_function(outputs, labels)
-        _,predict = torch.max(outputs, axis=1)
+        _,predict = torch.max(outputs, dim=1)
 
         accuracy = torch.eq(predict, labels).sum().item() / labels.size(0)
 
@@ -73,11 +78,12 @@ def val(val_loader, net, loss_function):
 epoch = 30
 best = 0
 for epoch in range(epoch):
-    print(f'epoch{epoch+1}:\n---------------')
+    print(f'epoch{epoch+1}:\n-------------------------')
     train(train_loader, net, loss_function, optimizer)
     a = val(val_loader, net, loss_function)
 
     if a > best:
         best = a
-        save_path = './Lenet3.pth'
+        save_path = 'Lenet.pth'
         torch.save(net.state_dict(), save_path)
+
